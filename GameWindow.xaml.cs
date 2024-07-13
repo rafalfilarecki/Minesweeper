@@ -22,8 +22,8 @@ namespace Minesweeper
             {
                 GameGrid.RowDefinitions.Add(new RowDefinition());
             }
-            
-            for (int i = 0;i < columns; i++)
+
+            for (int i = 0; i < columns; i++)
             {
                 GameGrid.ColumnDefinitions.Add(new ColumnDefinition());
             }
@@ -47,7 +47,31 @@ namespace Minesweeper
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            Button button = sender as Button;
+            int[] position = button.Tag as int[];
+            int row = position[0];
+            int column = position[1];
+
+            Game.RevealCell(row, column);
+            UpdateGrid();
+        }
+
+        private void UpdateGrid()
+        {
+            for (int i = 0; i < Game.Rows; i++)
+            {
+                for (int j = 0;j < Game.Columns; j++)
+                {
+                    var cell = Game.Board.Cells[i, j];
+                    var button = Buttons[i, j];
+
+                    if (cell.IsRevealed)
+                    {
+                        button.Content = cell.IsMine ? "M" : cell.NeighborMines.ToString();
+                        button.IsEnabled = false;
+                    }
+                }
+            }
         }
     }
 }
