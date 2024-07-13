@@ -11,12 +11,18 @@ namespace Minesweeper
 
         public void Reaveal()
         {
-            IsRevealed = true;
+            if (!IsFlagged)
+            {
+                IsRevealed = true; 
+            }
         }
 
         public void ToogleFlag()
         {
-            IsFlagged = !IsFlagged;
+            if (!IsRevealed)
+            {
+                IsFlagged = !IsFlagged;
+            }
         }
     }
 }

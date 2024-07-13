@@ -15,6 +15,7 @@ namespace Minesweeper
         private bool IsGameOver;
         private bool IsGameWon;
 
+        // TODO: Make UI prettier
         public Game(int rows, int columns, int mines)
         {
             Rows = rows;
@@ -24,6 +25,13 @@ namespace Minesweeper
             IsGameWon = false;
         }
 
+        public void ToggleFlag(int row, int column)
+        {
+            Board.Cells[row, column].ToogleFlag();
+        }
+
+        // TODO: Make flagged cells unable to reveal
+        // TODO: Left and right click reveals surrounding of non mine cell if all mines flagged
         public void RevealCell(int row, int column)
         {
             if (IsGameOver)
@@ -35,6 +43,7 @@ namespace Minesweeper
             CheckGameState(row, column);
         }
 
+        // TODO: Restart and New game buttons
         private void CheckGameState(int row, int column)
         {
             if (Board.Cells[row, column].IsMine)
