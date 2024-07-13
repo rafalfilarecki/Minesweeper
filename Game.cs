@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Minesweeper
 {
@@ -31,6 +32,43 @@ namespace Minesweeper
             }
 
             Board.RevealCell(row, column);
+            CheckGameState(row, column);
+        }
+
+        private void CheckGameState(int row, int column)
+        {
+            if (Board.Cells[row, column].IsMine)
+            {
+                IsGameOver = true;
+                MessageBox.Show("Game Over! You hit a mine.");
+                return;
+            }
+            else
+            {
+                bool allNonMineCellsRevealed = true;
+                for (int i = 0; i < Rows; i++)
+                {
+                    for (int j = 0; j < Columns; j++)
+                    {
+                        if (!Board.Cells[i, j].IsMine && !Board.Cells[i, j].IsRevealed)
+                        {
+                            allNonMineCellsRevealed = false;
+                            break;
+                        }
+                    }
+                    if (!allNonMineCellsRevealed)
+                    {
+                        break;
+                    }
+                }
+
+                if (allNonMineCellsRevealed)
+                {
+                    IsGameWon = true;
+                    IsGameOver = true;
+                    MessageBox.Show("Congratulations! You won.");
+                }
+            }
         }
     }
 }
