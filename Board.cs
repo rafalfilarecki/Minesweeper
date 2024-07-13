@@ -5,25 +5,25 @@ namespace Minesweeper
 {
     public class Board
     {
-        private readonly int rows;
-        private readonly int columns;
-        private readonly int mines;
+        private readonly int Rows;
+        private readonly int Columns;
+        private readonly int Mines;
         public Cell[,] Cells { get; private set; }
 
         public Board(int rows, int columns, int mines)
         {
-            this.rows = rows;
-            this.columns = columns;
-            this.mines = mines;
+            Rows = rows;
+            Columns = columns;
+            Mines = mines;
             InitializeBoard();
         }
 
         private void InitializeBoard()
         {
-            Cells = new Cell[rows, columns];
-            for (int i = 0; i < rows; i++)
+            Cells = new Cell[Rows, Columns];
+            for (int i = 0; i < Rows; i++)
             {
-                for (int j = 0; j < columns; j++)
+                for (int j = 0; j < Columns; j++)
                 {
                     Cells[i, j] = new Cell();
                 }
@@ -38,10 +38,10 @@ namespace Minesweeper
             Random random = new Random();
             int minesPlaced = 0;
 
-            while (minesPlaced < mines)
+            while (minesPlaced < Mines)
             {
-                int i = random.Next(rows);
-                int j = random.Next(columns);
+                int i = random.Next(Rows);
+                int j = random.Next(Columns);
 
                 if (!Cells[i, j].IsMine)
                 {
@@ -53,9 +53,9 @@ namespace Minesweeper
 
         private void CalculateNeighborMines()
         {
-            for (int i = 0; i < rows; i++)
+            for (int i = 0; i < Rows; i++)
             {
-                for (int j = 0; j < columns; j++)
+                for (int j = 0; j < Columns; j++)
                 {
                     if (!Cells[i, j].IsMine)
                     {
@@ -70,11 +70,11 @@ namespace Minesweeper
             int count = 0;
             for (int i = -1; i <= 1; i++)
             {
-                for (int j =-1; j <= 1; j++)
+                for (int j = -1; j <= 1; j++)
                 {
                     int r = row + i;
                     int c = column + j;
-                    if (r >= 0 && r < rows && c >= 0 && c < columns && Cells[r, c].IsMine)
+                    if (r >= 0 && r < Rows && c >= 0 && c < Columns && Cells[r, c].IsMine)
                     {
                         count++;
                     }
@@ -83,5 +83,30 @@ namespace Minesweeper
             return count;
         }
 
+        public void RevealCell(int row, int column)
+        {
+            if (Cells[row, column].IsRevealed || Cells[row, column].IsFlagged)
+            {
+                return;
+            }
+
+            Cells[row, column].Reaveal();
+
+            if (Cells[row, column].NeighborMines == 0 && !Cells[row, column].IsMine)
+            {
+                for (int i = -1; i <= 1; i++)
+                {
+                    for (int j = -1; j <= 1; j++)
+                    {
+                        int r = row + i;
+                        int c = column + j;
+                        if (r >= 0 && r < Rows && c >= 0 && c < Columns && !Cells[r, c].IsRevealed)
+                        {
+                            RevealCell(r, c);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
