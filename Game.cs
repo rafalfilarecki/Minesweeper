@@ -15,6 +15,8 @@ namespace Minesweeper
         private bool IsGameOver;
         private bool IsGameWon;
 
+        public event Action<string> GameOver;
+
         // TODO: Make UI prettier
         public Game(int rows, int columns, int mines)
         {
@@ -49,7 +51,7 @@ namespace Minesweeper
             if (Board.Cells[row, column].IsMine)
             {
                 IsGameOver = true;
-                MessageBox.Show("Game Over! You hit a mine.");
+                GameOver?.Invoke("Game Over! You hit a mine.");
                 return;
             }
             else
@@ -75,7 +77,7 @@ namespace Minesweeper
                 {
                     IsGameWon = true;
                     IsGameOver = true;
-                    MessageBox.Show("Congratulations! You won.");
+                    GameOver?.Invoke("Congratulations! You won.");
                 }
             }
         }

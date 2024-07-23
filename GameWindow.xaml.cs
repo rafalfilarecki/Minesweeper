@@ -14,6 +14,7 @@ namespace Minesweeper
         {
             InitializeComponent();
             Game = new Game(rows, columns, mines);
+            Game.GameOver += OnGameOver;
             InitializeGrid(rows, columns);
         }
 
@@ -80,6 +81,11 @@ namespace Minesweeper
 
                     switch (true)
                     {
+                        case true when (cell.IsRevealed && !cell.IsMine && cell.NeighborMines == 0):
+                            button.Content = "";
+                            button.IsEnabled = false;
+                            break;
+
                         case true when cell.IsRevealed:
                             button.Content = cell.IsMine ? "M" : cell.NeighborMines.ToString();
                             button.IsEnabled = false;
@@ -95,6 +101,11 @@ namespace Minesweeper
                     }
                 }
             }
+        }
+
+        private void OnGameOver(string message)
+        {
+            MessageBox.Show(message);
         }
     }
 }
