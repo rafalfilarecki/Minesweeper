@@ -16,6 +16,14 @@ namespace Minesweeper
             Columns = columns;
             Mines = mines;
             InitializeBoard();
+            PlaceMines();
+        }
+
+        public Board(int rows, int columns)
+        {
+            Rows = rows;
+            Columns = columns;
+            InitializeBoard();
         }
 
         private void InitializeBoard()
@@ -28,9 +36,6 @@ namespace Minesweeper
                     Cells[i, j] = new Cell();
                 }
             }
-
-            PlaceMines();
-            CalculateNeighborMines();
         }
 
         private void PlaceMines()
@@ -49,9 +54,11 @@ namespace Minesweeper
                     minesPlaced++;
                 }
             }
+
+            CalculateNeighborMines();
         }
 
-        private void CalculateNeighborMines()
+        public void CalculateNeighborMines()
         {
             for (int i = 0; i < Rows; i++)
             {

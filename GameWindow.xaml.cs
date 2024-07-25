@@ -9,17 +9,31 @@ namespace Minesweeper
     {
         private Game Game;
         private Button[,] Buttons;
+        private int initialRows;
+        private int initialColumns;
+        private int initialMines;
 
-        public  GameWindow(int rows, int columns, int mines)
+        public GameWindow(int rows, int columns, int mines)
         {
             InitializeComponent();
+            initialRows = rows;
+            initialColumns = columns;
+            initialMines = mines;
+            StartNewGame(rows, columns, mines);
+        }
+
+        private void StartNewGame(int rows, int columns, int mines)
+        {
             Game = new Game(rows, columns, mines);
-            Game.GameOver += OnGameOver;
             InitializeGrid(rows, columns);
+            Game.GameOver += OnGameOver;
         }
 
         private void InitializeGrid(int rows, int columns)
         {
+            GameGrid.RowDefinitions.Clear();
+            GameGrid.ColumnDefinitions.Clear();
+
             for (int i = 0; i < rows; i++)
             {
                 GameGrid.RowDefinitions.Add(new RowDefinition());
@@ -46,6 +60,8 @@ namespace Minesweeper
                     Buttons[i,j] = button;
                 }
             }
+
+            UpdateGrid();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -105,7 +121,27 @@ namespace Minesweeper
 
         private void OnGameOver(string message)
         {
-            MessageBox.Show(message);
+            System.Threading.Thread.Sleep(1000);
+            var result = MessageBox.Show(message + "\n\nNew Game: Yes\nRestart: No\nEnd Game: Cancel", "Game Over", MessageBoxButton.YesNoCancel);
+
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    StartNewGame(initialRows, initialColumns, initialMines);
+                    break;
+                case MessageBoxResult.No:
+                    RestartCurrentGame();
+                    break;
+                case MessageBoxResult.Cancel:
+                    this.Close();
+                    break;
+            }
+        }
+
+        private void RestartCurrentGame()
+        {
+            Game.Restart();
+            InitializeGrid(initialRows, initialColumns);
         }
     }
 }
