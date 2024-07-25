@@ -121,20 +121,16 @@ namespace Minesweeper
 
         private void OnGameOver(string message)
         {
-            System.Threading.Thread.Sleep(1000);
-            var result = MessageBox.Show(message + "\n\nNew Game: Yes\nRestart: No\nEnd Game: Cancel", "Game Over", MessageBoxButton.YesNoCancel);
+            GameOverWindow gameOverWindow = new GameOverWindow(message);
+            bool? result = gameOverWindow.ShowDialog();
 
-            switch (result)
+            if (result == true)
             {
-                case MessageBoxResult.Yes:
-                    StartNewGame(initialRows, initialColumns, initialMines);
-                    break;
-                case MessageBoxResult.No:
-                    RestartCurrentGame();
-                    break;
-                case MessageBoxResult.Cancel:
-                    this.Close();
-                    break;
+                StartNewGame(initialRows, initialColumns, initialMines);
+            }
+            else if (result == false)
+            {
+                RestartCurrentGame();
             }
         }
 
