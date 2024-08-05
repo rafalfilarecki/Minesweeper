@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Xml.Serialization;
 
 namespace Minesweeper
 {
@@ -19,7 +21,9 @@ namespace Minesweeper
             initialRows = rows;
             initialColumns = columns;
             initialMines = mines;
+            MinesTextBlock.Text = initialMines.ToString();
             StartNewGame(rows, columns, mines);
+            UpdateFlaggedCount();
         }
 
         private void StartNewGame(int rows, int columns, int mines)
@@ -31,18 +35,9 @@ namespace Minesweeper
 
         private void InitializeGrid(int rows, int columns)
         {
-            GameGrid.RowDefinitions.Clear();
-            GameGrid.ColumnDefinitions.Clear();
-
-            for (int i = 0; i < rows; i++)
-            {
-                GameGrid.RowDefinitions.Add(new RowDefinition());
-            }
-
-            for (int i = 0; i < columns; i++)
-            {
-                GameGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            }
+            GameGrid.Rows = rows;
+            GameGrid.Columns = columns;
+            GameGrid.Children.Clear();
 
             Buttons = new Button[rows, columns];
 
@@ -54,10 +49,9 @@ namespace Minesweeper
                     button.Tag = new int[] { i, j };
                     button.Click += Button_Click;
                     button.MouseRightButtonDown += Button_MouseRightButtonDown;
-                    Grid.SetRow(button, i);
-                    Grid.SetColumn(button, j);
+                    button.PreviewMouseDown += Button_PreviewMouseDown;
                     GameGrid.Children.Add(button);
-                    Buttons[i,j] = button;
+                    Buttons[i, j] = button;
                 }
             }
 
@@ -84,13 +78,34 @@ namespace Minesweeper
 
             Game.ToggleFlag(row, column);
             UpdateGrid();
+            UpdateFlaggedCount();
+        }
+
+        private void Button_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Mouse.LeftButton == MouseButtonState.Pressed && Mouse.RightButton == MouseButtonState.Pressed)
+            {
+                Button button = sender as Button;
+                int[] position = button.Tag as int[];
+                int row = position[0];
+                int column = position[1];
+
+                HandleBothClicks(row, column);
+                e.Handled = true;
+            }
+        }
+
+        private void HandleBothClicks(int row, int column)
+        {
+            Game.RevealSurroundingCells(row, column);
+            UpdateGrid();
         }
 
         private void UpdateGrid()
         {
             for (int i = 0; i < Game.Rows; i++)
             {
-                for (int j = 0;j < Game.Columns; j++)
+                for (int j = 0; j < Game.Columns; j++)
                 {
                     var cell = Game.Board.Cells[i, j];
                     var button = Buttons[i, j];
@@ -119,16 +134,21 @@ namespace Minesweeper
             }
         }
 
+        private void UpdateFlaggedCount()
+        {
+            int flaggedCount = Game.GetFlaggedCount();
+            FlaggedTextBlock.Text = flaggedCount.ToString();
+        }
         private void OnGameOver(string message)
         {
             GameOverWindow gameOverWindow = new GameOverWindow(message);
             bool? result = gameOverWindow.ShowDialog();
 
-            if (result == true)
+            if (result == false)
             {
                 StartNewGame(initialRows, initialColumns, initialMines);
             }
-            else if (result == false)
+            else if (result == true)
             {
                 RestartCurrentGame();
             }

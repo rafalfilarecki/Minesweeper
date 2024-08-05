@@ -13,7 +13,7 @@ namespace Minesweeper
         {
             if (!IsFlagged)
             {
-                IsRevealed = true; 
+                IsRevealed = true;
             }
         }
 

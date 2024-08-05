@@ -20,7 +20,6 @@ namespace Minesweeper
 
         // TODO: Make UI prettier
         // TODO: Prevent from input errors
-        // TODO: Make flagged cells unable to reveal
         // TODO: Left and right click reveals surrounding of non mine cell if all mines flagged
         public Game(int rows, int columns, int mines)
         {
@@ -47,6 +46,23 @@ namespace Minesweeper
 
             Board.RevealCell(row, column);
             CheckGameState(row, column);
+        }
+
+        public void RevealSurroundingCells(int row, int column) //TODO: return if not enough flagged cells in surrounding
+        {
+            for (int i = row - 1; i <= row + 1; i++)
+            {
+                for (int j = column - 1; j <= column + 1; j++)
+                {
+                    if (i <= 0 && i <= Rows && j >= 0 && j <= Columns)
+                    {
+                        if (!Board.Cells[i, j].IsRevealed)
+                        {
+                            RevealCell(i, j);
+                        }
+                    }
+                }
+            }
         }
 
         private void SaveInitialState()
@@ -79,7 +95,7 @@ namespace Minesweeper
 
         private void CheckGameState(int row, int column)
         {
-            if (Board.Cells[row, column].IsMine)
+            if (Board.Cells[row, column].IsMine && !Board.Cells[row, column].IsFlagged)
             {
                 IsGameOver = true;
                 RevealMines();
@@ -114,7 +130,7 @@ namespace Minesweeper
             }
         }
 
-        private void RevealMines()
+        private void RevealMines() // TODO: Make it visible
         {
             for (int i = 0; i < Rows; i++)
             {
@@ -126,6 +142,24 @@ namespace Minesweeper
                     }
                 }
             }
+        }
+
+        public int GetFlaggedCount()
+        {
+            int flaggedCount = 0;
+
+            for (int i = 0; i < Rows; i++)
+            {
+                for (int j = 0; j < Columns; j++)
+                {
+                    if (Board.Cells[i, j].IsFlagged)
+                    {
+                        flaggedCount++;
+                    }
+                }
+            }
+
+            return flaggedCount;
         }
     }
 }

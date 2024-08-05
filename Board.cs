@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
 namespace Minesweeper
@@ -50,7 +51,7 @@ namespace Minesweeper
 
                 if (!Cells[i, j].IsMine)
                 {
-                    Cells[i,j].IsMine = true;
+                    Cells[i, j].IsMine = true;
                     minesPlaced++;
                 }
             }
@@ -92,7 +93,7 @@ namespace Minesweeper
 
         public void RevealCell(int row, int column)
         {
-            if (Cells[row, column].IsRevealed || Cells[row, column].IsFlagged)
+            if (Cells[row, column].IsRevealed)
             {
                 return;
             }

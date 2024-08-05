@@ -17,12 +17,12 @@ namespace Minesweeper
 
         private void NewGameButton_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
+            DialogResult = false;
         }
 
         private void RestartButton_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
+            DialogResult = true;
         }
 
         private void EndGameButton_Click(object sender, RoutedEventArgs e)

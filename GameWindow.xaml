@@ -6,6 +6,21 @@
         xmlns:local="clr-namespace:Minesweeper"
         mc:Ignorable="d"
         Title="GameWindow" Height="450" Width="800">
-    <Grid Name="GameGrid">
+    <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+		</Grid.RowDefinitions>
+
+		<StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,10">
+			<TextBlock Text="Mines: " />
+			<TextBlock Name="MinesTextBlock" Text="0" Margin="5,0" />
+			<TextBlock Text="Flagged: " Margin="20,0,0,0" />
+			<TextBlock Name="FlaggedTextBlock" Text="0" Margin="5,0" />
+		</StackPanel>
+
+		<Border Grid.Row="1" BorderBrush="Black" BorderThickness="2" Margin="100,50">
+            <UniformGrid Name="GameGrid" Rows="1" Columns="1" />
+        </Border>
     </Grid>
 </Window>
